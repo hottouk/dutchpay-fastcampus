@@ -1,0 +1,55 @@
+@startuml
+
+object CreateGroup{
+  state groupName: string
+  state formValidated: boolean
+}
+object AddMembers{
+  state memeber: string[]
+  state formValidated: boolean
+}
+object ExpenseMain{
+  grooupName: string
+  memeber: string[]
+}
+
+object CenteredOverlayForm{
+  props title: string
+  props inputType: string
+  props hadnleFromSubmitted: function
+
+  state currentValue: string
+}
+
+object CenteredOverlay 
+
+object AddExpenseForm{
+  members: string[]
+  state payer: string
+  state description: string
+  state amount: number
+  state piadAt: date 
+  state formValidated: boolean
+}
+object ExpenseSummary{
+  expneses: expense[]
+  members: string[]
+
+}
+object ExpenseList{
+  expense: expense[]
+}
+
+
+CreateGroup *-- CenteredOverlayForm
+AddMembers *-- CenteredOverlayForm
+CenteredOverlayForm *-- CenteredOverlay
+
+ExpenseMain *-- ExpenseList
+ExpenseMain *-- ExpenseSummary
+ExpenseMain *-- AddExpenseForm
+
+ExpenseList *-- CenteredOverlay
+
+
+@enduml
