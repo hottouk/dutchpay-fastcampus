@@ -6,7 +6,7 @@ import ServiceLogo from './ServiceLogo'
 
 const CenteredOverlayForm = ({ title, children, validated, handleSubmit }) => {
   return (
-    <CentralizedContainer>
+    <StyledCentralizedContainer>
       <ServiceLogo/>
       <OverlayWrapper>
         <Container>
@@ -27,11 +27,11 @@ const CenteredOverlayForm = ({ title, children, validated, handleSubmit }) => {
           </Form>
         </Container>
       </OverlayWrapper>
-    </CentralizedContainer>
+    </StyledCentralizedContainer>
   )
 }
 
-const CentralizedContainer = styled(Container)`
+const StyledCentralizedContainer = styled(Container)`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -40,6 +40,9 @@ const CentralizedContainer = styled(Container)`
   gap: 10px;
   width: 50vw;
   min-height: 100vh;
+  @media (max-width:500px){
+    width: 80vw;
+  }
 `
 
 const StyledBtn = styled(Button).attrs({
