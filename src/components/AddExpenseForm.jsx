@@ -5,6 +5,8 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import { groupMembersState } from '../state/groupMembers'
 import { expnesesState } from '../state/expenses'
 import styled from 'styled-components'
+import { API } from 'aws-amplify'
+import { groupIdState } from '../state/groupId'
 
 const AddExpenseForm = () => {
   const groupMembers = useRecoilValue(groupMembersState)
@@ -14,11 +16,28 @@ const AddExpenseForm = () => {
   const [amount, setAmount] = useState(0)
   const [payer, setPayer] = useState(null)
   const [validated, setValidated] = useState(false)
-
   const [expense, setExpense] = useRecoilState(expnesesState)
   const [isDescValid, setisDescValid] = useState(false)
   const [isAmountValid, setisAmountValid] = useState(false)
   const [isPayerValid, setIsPayerValid] = useState(false)
+  const guid = useRecoilValue(groupIdState)
+
+  const saveExpense = (expense) => {
+    API.put('groupsApi', `/groups/${guid}/expenses`, {
+      body: {
+        expense: expense
+      }
+    }).then(response => {
+      setExpense(expenses =>
+        [...expenses,
+          expense]
+      )
+    }).catch(error => {
+      alert(error)
+    });
+  }
+
+
   const checkFormFValidity = () => {
     setisDescValid(desc.length > 0)
     setIsPayerValid(payer !== null)
@@ -29,7 +48,6 @@ const AddExpenseForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault() // prevent default 에러메세지가 나왔다 바로 사라지는 것 방지!!
     if (checkFormFValidity() === false) {
-      //todo
     } else {
       const newExpense = {
         date,
@@ -37,10 +55,7 @@ const AddExpenseForm = () => {
         amount,
         payer,
       }
-      setExpense(expense =>
-        [...expense,
-          newExpense]
-      )
+      saveExpense(newExpense)
     }
     setValidated(true)
   }

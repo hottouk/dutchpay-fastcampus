@@ -5,11 +5,18 @@ import ExpenseMain from './components/ExpenseMain';
 import AddMembers from './components/AddMembers';
 import { RecoilRoot } from 'recoil'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {ROUTES} from './routes';
+import { ROUTES } from './routes';
+import { Amplify } from 'aws-amplify';
+import awsmobile from './aws-exports';
+import {RecoilDevTools} from 'recoil-toolkit';
+
+
+Amplify.configure(awsmobile)
 
 function App() {
   return (
     <RecoilRoot>
+      <RecoilDevTools forceSerialize={false} />
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Navigate to={ROUTES.CREATE_GROUP} />} />
