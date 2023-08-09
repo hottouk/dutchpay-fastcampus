@@ -19,6 +19,7 @@ const renderComponent = () => {
   const amountInput = screen.getByPlaceholderText(/비용은 얼마/i)
   const payerInput = screen.getByDisplayValue(/누가 결제/i)
   const addBtn = screen.getByText('추가하기')
+  const shareBtn = screen.getByTestId('share-btn')
 
   const descErrorMesg = screen.getByText('비용 설명을 입력하세요.') //getby는 실행 당시 domtree에 존재해야 함.
   const payerErrorMesg = screen.getByText('결제자를 선택하세요.')
@@ -27,7 +28,7 @@ const renderComponent = () => {
 
   //정규표현식 /i 는 대소문자 구분 안함
   return {
-    dateInput, descInput, amountInput, payerInput, addBtn, descErrorMesg, payerErrorMesg, amountErrorMesg, amountErrorMesg
+    dateInput, descInput, amountInput, payerInput, addBtn, descErrorMesg, payerErrorMesg, amountErrorMesg, amountErrorMesg, shareBtn
   }
 }
 
@@ -138,6 +139,49 @@ describe('비용 정산 메인 페이지', () => {
 
     afterEach(function () {
       jest.resetAllMocks()
+    })
+
+  })
+
+  describe('공유버튼 컴포넌트', function () {
+    test('공유 버튼 컴포넌트가 랜더링 되는가?', () => {
+      const { shareBtn } = renderComponent()
+      expect(shareBtn).toBeInTheDocument()
+    })
+  })
+
+  describe('공유 버튼 클릭 시', function () {
+    describe('모바일에서', function () {
+      beforeEach(function () {
+        global.navigator.share = jest.fn()
+        Object.defineProperty(window.navigator, 'userAgent', { value: 'iPhone' })
+      })
+
+      test('공유용 다이얼로그가 뜬다.', async () => {
+        const { shareBtn } = renderComponent()
+        await userEvent.click(shareBtn)
+        //Navigator.share 함수가 호출되었는가?
+        expect(navigator.share).toHaveBeenCalledTimes(1)
+      })
+
+    })
+
+    describe('데스크 탑에서', function () {
+      beforeEach(function () {
+        global.navigator.clipboard = {
+          writeText: () => {
+            return new Promise(jest.fn())
+          }
+        }
+      })
+
+      test('클립보드에 링크가 복사된다.', async () => {
+        const { shareBtn } = renderComponent()
+        const spiedWriteText = jest.spyOn(navigator.clipboard, "writeText")
+        await userEvent.click(shareBtn)
+        expect(spiedWriteText).toBeCalledTimes(1)
+        expect(spiedWriteText).toHaveBeenCalledWith(window.location.href)
+      })
     })
 
   })

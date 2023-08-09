@@ -8,22 +8,40 @@ import { groupNameState } from '../state/groupName'
 import SettlementSummary from './SettlementSummary'
 import ServiceLogo from './shared/ServiceLogo'
 import { useGroupData } from '../hooks/useGroupData'
+import { ShareFill } from 'react-bootstrap-icons'
 
 const ExpenseMain = () => {
   useGroupData()
+
+  const handleSharing = () => {
+    //1. 모바일인지 데탑인지 구분
+    if (navigator.userAgent.match(/Android|iPhone/i) && navigator.share) {
+      //3-1. navigator.share 다이얼로그
+      navigator.share({
+        url: window.location.href
+      })
+    } else {
+      //3-2. navigator.clipboard.writeText
+      navigator.clipboard.writeText(
+        window.location.href
+      ).then(() => {
+        alert('공유 링크가 클립보드에 복사 되었습니다. 그룹 멤버들과 공유해 보세요')
+      })
+    }
+  }
+
   return (
-    <div>
-      <Container fluid>
-        <Row>
-          <Col xs={12} sm={8} md={4}>
-            <LeftPane />
-          </Col>
-          <Col>
-            <RightPane />
-          </Col>
-        </Row>
-      </Container>
-    </div>
+    <Container fluid>
+      <Row>
+        <Col xs={12} sm={8} md={4}>
+          <LeftPane />
+        </Col>
+        <Col>
+          <RightPane />
+        </Col>
+      </Row>
+      <StyledShareBtn data-testId="share-btn" onClick={handleSharing}><ShareFill/></StyledShareBtn>
+    </Container>
   )
 }
 
@@ -51,11 +69,26 @@ const RightPane = () => {
   )
 }
 
+
+const StyledShareBtn = styled.div`
+  border-radius:50%;
+  background-color: black;
+  position: fixed;
+  width: 55px;
+  height: 55px;
+  right: 40px;
+  bottom: 45px;
+  filter: dropshadow(4px 4px 6px rgba(0, 0, 0, 0.25));
+  background-color: #6b3da6;
+  color:white;
+  text-align: center;
+  font-size: 30px;
+`
+
 const StyledRow = styled(Row)`
   gap: 5vh;
   padding-top: 100px;
   justify-content: center;
-
 `
 
 const StyledRightContainer = styled(Container)`
