@@ -36,24 +36,6 @@
       "service": "Lambda"
     }
   },
-  "parameters": {
-    "AMPLIFY_function_groupsLambda_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "groupsLambda"
-        }
-      ]
-    },
-    "AMPLIFY_function_groupsLambda_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "groupsLambda"
-        }
-      ]
-    }
-  },
   "storage": {
     "groups": {
       "providerPlugin": "awscloudformation",
